@@ -1,0 +1,256 @@
+/* ═══════════════════════════════════════════════════════════════════
+   ANIMATED GRADIENT BORDER — v7
+   src/styles/gradient-border.css
+
+   CHANGES IN v7:
+   ─────────────
+   1. Light mode now has a real blue-based animation (was transparent/off).
+      Uses --primary (#2563eb) arc — elegant, minimal, SaaS-style.
+      Same conic technique, just blue palette instead of purple.
+   2. agb-inner-card / agb-inner-panel: light mode now sets #ffffff bg
+      so the light blue border is visible against white.
+   3. Projects card: image-area clipping technique documented.
+   4. Dark mode unchanged.
+   ═══════════════════════════════════════════════════════════════════ */
+
+
+/* ─── 1. @property ──────────────────────────────────────────────── */
+@property --border-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+
+/* ─── 2. Keyframe ───────────────────────────────────────────────── */
+@keyframes gbSpin {
+  to { --border-angle: 360deg; }
+}
+
+
+/* ─── 3. Base: position on all wrappers ─────────────────────────── */
+.animated-gradient-border,
+.animated-gradient-border--slow,
+.animated-gradient-border--hover {
+  position: relative;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   LIGHT MODE
+   Blue accent (#2563eb / #3b82f6) — subtle arc, no glow, clean SaaS
+   ══════════════════════════════════════════════════════════════════ */
+
+/* Permanent variants — light mode */
+html:not(.dark) .animated-gradient-border,
+html:not(.dark) .animated-gradient-border--slow {
+  background: conic-gradient(
+    from var(--border-angle),
+    transparent                    0%,
+    transparent                   18%,
+    rgba(37,  99, 235, 0.30)      22%,   /* #2563eb soft entry */
+    rgba(59, 130, 246, 0.70)      30%,   /* #3b82f6 */
+    rgba(37,  99, 235, 0.90)      40%,   /* #2563eb peak */
+    rgba(96, 165, 250, 0.70)      48%,   /* #60a5fa light blue */
+    rgba(37,  99, 235, 0.55)      56%,   /* fade out */
+    rgba(37,  99, 235, 0.15)      64%,
+    transparent                   70%,
+    transparent                  100%
+  );
+  animation: gbSpin 4s linear infinite;
+}
+
+html:not(.dark) .animated-gradient-border--slow {
+  animation-duration: 5s;
+}
+
+/* Hover variant — light mode (same blue, fade-in reveal) */
+html:not(.dark) .animated-gradient-border--hover {
+  background: conic-gradient(
+    from var(--border-angle),
+    transparent                    0%,
+    transparent                   18%,
+    rgba(37,  99, 235, 0.25)      22%,
+    rgba(59, 130, 246, 0.65)      30%,
+    rgba(37,  99, 235, 0.85)      40%,
+    rgba(96, 165, 250, 0.65)      48%,
+    rgba(37,  99, 235, 0.45)      56%,
+    rgba(37,  99, 235, 0.12)      64%,
+    transparent                   70%,
+    transparent                  100%
+  );
+  animation: gbSpin 5s linear infinite;
+}
+
+/* ::before cover — hides gradient at rest in light mode */
+html:not(.dark) .animated-gradient-border--hover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--bg);   /* #f7f9ff — matches page bg */
+  opacity: 1;
+  z-index: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+html:not(.dark) .animated-gradient-border--hover:hover::before {
+  opacity: 0;
+}
+
+/* Inner content above ::before */
+html:not(.dark) .animated-gradient-border--hover > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Light mode inner backgrounds — white so blue border reads clearly */
+.agb-inner-card,
+.agb-inner-panel {
+  background: #ffffff !important;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════
+   DARK MODE
+   Purple/indigo arc — unchanged from v6
+   ══════════════════════════════════════════════════════════════════ */
+
+.dark .animated-gradient-border,
+.dark .animated-gradient-border--slow {
+  background: conic-gradient(
+    from var(--border-angle),
+    transparent                0%,
+    transparent               12%,
+    rgba(109, 40, 217, 0.6)  16%,
+    #7c3aed                  24%,
+    #8b5cf6                  33%,
+    #a78bfa                  43%,
+    #c4b5fd                  50%,
+    #a78bfa                  57%,
+    #6366f1                  66%,
+    rgba(99, 102, 241, 0.5)  72%,
+    transparent              79%,
+    transparent             100%
+  );
+  animation: gbSpin 4s linear infinite;
+}
+
+.dark .animated-gradient-border--slow {
+  animation-duration: 5s;
+}
+
+.dark .animated-gradient-border--hover {
+  background: conic-gradient(
+    from var(--border-angle),
+    transparent                0%,
+    transparent               12%,
+    rgba(109, 40, 217, 0.6)  16%,
+    #7c3aed                  24%,
+    #8b5cf6                  33%,
+    #a78bfa                  43%,
+    #c4b5fd                  50%,
+    #a78bfa                  57%,
+    #6366f1                  66%,
+    rgba(99, 102, 241, 0.5)  72%,
+    transparent              79%,
+    transparent             100%
+  );
+  animation: gbSpin 5s linear infinite;
+}
+
+.dark .animated-gradient-border--hover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--bg);
+  opacity: 1;
+  z-index: 0;
+  pointer-events: none;
+  transition: opacity 0.35s ease;
+}
+
+.dark .animated-gradient-border--hover:hover::before {
+  opacity: 0;
+}
+
+.dark .animated-gradient-border--hover > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Dark mode inner backgrounds — fully opaque */
+.dark .agb-inner-card  { background: rgb(17, 24, 39) !important; }
+.dark .agb-inner-panel { background: rgb(10, 14, 28) !important; }
+
+
+/* ─── Reduced motion ────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html:not(.dark) .animated-gradient-border,
+  html:not(.dark) .animated-gradient-border--slow {
+    animation: none;
+    background: linear-gradient(
+      135deg,
+      transparent                0%,
+      rgba(37,  99, 235, 0.55) 25%,
+      rgba(59, 130, 246, 0.80) 50%,
+      rgba(37,  99, 235, 0.40) 75%,
+      transparent              100%
+    );
+  }
+  html:not(.dark) .animated-gradient-border--hover {
+    animation: none;
+  }
+  html:not(.dark) .animated-gradient-border--hover::before {
+    transition: none;
+  }
+
+  .dark .animated-gradient-border,
+  .dark .animated-gradient-border--slow {
+    animation: none;
+    background: linear-gradient(
+      135deg,
+      transparent               0%,
+      rgba(124, 58, 237, 0.85) 18%,
+      #8b5cf6                  35%,
+      #c4b5fd                  50%,
+      #6366f1                  65%,
+      transparent              84%
+    );
+  }
+  .dark .animated-gradient-border--hover {
+    animation: none;
+  }
+  .dark .animated-gradient-border--hover::before {
+    transition: none;
+  }
+}
+
+
+/* ─── Utilities ─────────────────────────────────────────────────── */
+.grid-bg-overlay {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 80px 80px;
+}
+
+.submit-btn {
+  background: var(--primary);
+  color: #fff;
+  transition: background 0.2s ease;
+}
+.submit-btn:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--primary) 85%, white);
+}
+
+.input-error {
+  border-color: #f87171 !important;
+  box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.15) !important;
+}
